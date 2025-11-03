@@ -1,0 +1,14 @@
+com\quizz\quizz_backend\dto\JwtResponse.class
+com\quizz\quizz_backend\controller\AuthController.class
+com\quizz\quizz_backend\config\SecurityConfig.class
+com\quizz\quizz_backend\security\JwtAuthenticationFilter.class
+com\quizz\quizz_backend\security\CustomUserDetailsService.class
+com\quizz\quizz_backend\security\JwtTokenProvider.class
+com\quizz\quizz_backend\dto\SignupRequest.class
+com\quizz\quizz_backend\model\Role.class
+com\quizz\quizz_backend\QuizzBackendApplication.class
+com\quizz\quizz_backend\service\AuthService.class
+com\quizz\quizz_backend\repository\UserRepository.class
+com\quizz\quizz_backend\dto\LoginRequest.class
+com\quizz\quizz_backend\model\User$UserBuilder.class
+com\quizz\quizz_backend\model\User.class

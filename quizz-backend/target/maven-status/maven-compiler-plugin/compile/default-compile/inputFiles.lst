@@ -1,0 +1,13 @@
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\config\SecurityConfig.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\controller\AuthController.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\dto\JwtResponse.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\dto\LoginRequest.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\dto\SignupRequest.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\model\Role.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\model\User.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\QuizzBackendApplication.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\repository\UserRepository.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\security\CustomUserDetailsService.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\security\JwtAuthenticationFilter.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\security\JwtTokenProvider.java
+C:\Users\poplu\Desktop\Facultate\Programare WEB\Quizz\quizz-backend\src\main\java\com\quizz\quizz_backend\service\AuthService.java
