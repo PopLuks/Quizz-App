@@ -52,22 +52,42 @@ const Dashboard = () => {
                             <div className="feature-card">
                                 <h3>📝 Manage Quizzes</h3>
                                 <p>Create, edit, and delete quizzes</p>
-                                <button className="btn-feature">Go to Quizzes</button>
+                                <button 
+                                    className="btn-feature" 
+                                    onClick={() => navigate('/admin/quizzes')}
+                                >
+                                    Go to Quizzes
+                                </button>
                             </div>
                             <div className="feature-card">
                                 <h3>❓ Manage Questions</h3>
                                 <p>Add and manage quiz questions</p>
-                                <button className="btn-feature">Manage Questions</button>
+                                <button 
+                                    className="btn-feature"
+                                    onClick={() => navigate('/admin/questions')}
+                                >
+                                    Manage Questions
+                                </button>
                             </div>
                             <div className="feature-card">
                                 <h3>👥 View Users</h3>
                                 <p>See all registered users</p>
-                                <button className="btn-feature">User List</button>
+                                <button 
+                                    className="btn-feature"
+                                    onClick={() => navigate('/admin/users')}
+                                >
+                                    User List
+                                </button>
                             </div>
                             <div className="feature-card">
                                 <h3>📊 Statistics</h3>
                                 <p>View quiz statistics and results</p>
-                                <button className="btn-feature">View Stats</button>
+                                <button 
+                                    className="btn-feature"
+                                    onClick={() => navigate('/admin/statistics')}
+                                >
+                                    View Stats
+                                </button>
                             </div>
                         </>
                     ) : (

@@ -8,32 +8,61 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Verifică dacă există un user salvat în localStorage
-        const savedUser = localStorage.getItem('user');
+        // La încărcarea aplicației, verifică dacă există user în localStorage
         const token = localStorage.getItem('token');
+        const storedUser = localStorage.getItem('user');
         
-        if (savedUser && token) {
-            setUser(JSON.parse(savedUser));
+        console.log('AuthContext init - Token:', !!token, 'User:', storedUser); // DEBUG
+        
+        if (token && storedUser) {
+            try {
+                const userData = JSON.parse(storedUser);
+                console.log('Restoring user from localStorage:', userData); // DEBUG
+                setUser(userData);
+            } catch (error) {
+                console.error('Error parsing stored user:', error);
+                logout();
+            }
         }
         setLoading(false);
     }, []);
 
     const login = async (username, password) => {
         try {
+            console.log('AuthContext - Login attempt for:', username); // DEBUG
             const response = await authAPI.login({ username, password });
-            const { token, username: userName, email, role } = response.data;
             
-            const userData = { username: userName, email, role };
+            console.log('AuthContext - Login response:', response.data); // DEBUG
             
+            const { token, username: user, email, role } = response.data;
+            
+            // Salvează token-ul
             localStorage.setItem('token', token);
+            
+            // Salvează datele utilizatorului
+            const userData = { username: user, email, role };
             localStorage.setItem('user', JSON.stringify(userData));
+            
+            // Actualizează state-ul
             setUser(userData);
+            
+            console.log('AuthContext - User set:', userData); // DEBUG
             
             return { success: true };
         } catch (error) {
+            console.error('AuthContext - Login error:', error);
+            
+            // Verifică dacă eroarea este "Account disabled"
+            if (error.response?.data?.message?.includes('disabled')) {
+                return { 
+                    success: false, 
+                    message: 'Your account has been disabled. Please contact support.' 
+                };
+            }
+            
             return { 
                 success: false, 
-                error: error.response?.data?.message || 'Login failed' 
+                message: error.response?.data?.message || 'Login failed. Please try again.' 
             };
         }
     };
@@ -43,32 +72,28 @@ export const AuthProvider = ({ children }) => {
             await authAPI.signup({ username, email, password });
             return { success: true };
         } catch (error) {
+            console.error('Signup error:', error);
             return { 
                 success: false, 
-                error: error.response?.data?.message || 'Signup failed' 
+                message: error.response?.data?.message || 'Signup failed. Please try again.' 
             };
         }
     };
 
     const logout = () => {
+        console.log('AuthContext - Logging out'); // DEBUG
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
     };
 
-    const value = {
-        user,
-        loading,
-        login,
-        signup,
-        logout,
-        isAuthenticated: !!user,
-        isAdmin: user?.role === 'ADMIN',
-    };
+    const isAdmin = user?.role === 'ADMIN';
+
+    console.log('AuthContext render - User:', user, 'Loading:', loading); // DEBUG
 
     return (
-        <AuthContext.Provider value={value}>
-            {!loading && children}
+        <AuthContext.Provider value={{ user, login, signup, logout, loading, isAdmin }}>
+            {children}
         </AuthContext.Provider>
     );
 };

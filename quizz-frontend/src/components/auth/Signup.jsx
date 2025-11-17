@@ -1,49 +1,65 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
 import Toast from '../Toast';
 import './Auth.css';
 
 const Signup = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
     const [toast, setToast] = useState(null);
-    
+    const [loading, setLoading] = useState(false);
     const { signup } = useAuth();
     const navigate = useNavigate();
 
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match');
+        if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+            setToast({ message: 'Please fill in all fields', type: 'error' });
             return;
         }
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters');
+        if (formData.password !== formData.confirmPassword) {
+            setToast({ message: 'Passwords do not match!', type: 'error' });
+            return;
+        }
+
+        if (formData.password.length < 6) {
+            setToast({ message: 'Password must be at least 6 characters', type: 'error' });
             return;
         }
 
         setLoading(true);
 
-        const result = await signup(username, email, password);
-        
-        if (result.success) {
-            setToast({ message: 'Account created successfully! Redirecting to login...', type: 'success' });
-            setTimeout(() => {
-                navigate('/login');
-            }, 2000);
-        } else {
-            setError(result.error);
+        try {
+            const result = await signup(formData.username, formData.email, formData.password);
+            
+            if (result.success) {
+                setToast({ message: 'Account created! Redirecting to login...', type: 'success' });
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
+            } else {
+                setToast({ message: result.message || 'Signup failed', type: 'error' });
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            setToast({ message: 'An error occurred. Please try again.', type: 'error' });
+            setLoading(false);
         }
-        
-        setLoading(false);
     };
 
     return (
@@ -56,62 +72,78 @@ const Signup = () => {
                 />
             )}
             <div className="auth-card">
-                <h2>Create Account</h2>
-                <form onSubmit={handleSubmit}>
-                    {error && <div className="error-message">{error}</div>}
-                    
+                <div className="auth-header">
+                    <h1 className="auth-title">Create Account</h1>
+                    <p className="auth-subtitle">Join us and start your quiz journey</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
-                        <label>Username</label>
+                        <label>USERNAME</label>
                         <input
                             type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
                             placeholder="Choose a username"
+                            disabled={loading}
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Email</label>
+                        <label>EMAIL</label>
                         <input
                             type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             placeholder="Enter your email"
+                            disabled={loading}
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Password</label>
+                        <label>PASSWORD</label>
                         <input
                             type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
                             placeholder="Create a password"
+                            disabled={loading}
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Confirm Password</label>
+                        <label>CONFIRM PASSWORD</label>
                         <input
                             type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                             placeholder="Confirm your password"
+                            disabled={loading}
+                            required
                         />
                     </div>
 
-                    <button type="submit" disabled={loading} className="btn-primary">
-                        {loading ? 'Creating Account...' : 'Sign Up'}
+                    <button 
+                        type="submit" 
+                        className="btn-auth"
+                        disabled={loading}
+                    >
+                        {loading ? 'CREATING ACCOUNT...' : 'SIGN UP'}
                     </button>
                 </form>
 
-                <p className="auth-link">
-                    Already have an account? <Link to="/login">Login</Link>
-                </p>
+                <div className="auth-footer">
+                    <p>
+                        Already have an account? <Link to="/login">Login</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

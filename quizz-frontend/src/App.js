@@ -5,6 +5,10 @@ import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import ManageQuizzes from './components/admin/ManageQuizzes';
+import ManageQuestions from './components/admin/ManageQuestions';
+import UserList from './components/admin/UserList';
+import Statistics from './components/admin/Statistics';
 import './App.css';
 
 function App() {
@@ -20,6 +24,38 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/quizzes" 
+            element={
+              <ProtectedRoute>
+                <ManageQuizzes />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/questions" 
+            element={
+              <ProtectedRoute>
+                <ManageQuestions />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/users" 
+            element={
+              <ProtectedRoute>
+                <UserList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/statistics" 
+            element={
+              <ProtectedRoute>
+                <Statistics />
               </ProtectedRoute>
             } 
           />
