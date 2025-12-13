@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { statisticsAPI } from '../../services/api';
 import './Admin.css';
 
 const Statistics = () => {
@@ -7,26 +8,36 @@ const Statistics = () => {
         totalQuizzes: 0,
         totalQuestions: 0,
         totalUsers: 0,
+        totalAttempts: 0,
         activeUsers: 0,
         recentActivity: []
     });
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // TODO: Fetch statistics from backend
-        // Mock data
-        setStats({
-            totalQuizzes: 12,
-            totalQuestions: 145,
-            totalUsers: 234,
-            activeUsers: 189,
-            recentActivity: [
-                { id: 1, user: 'john_doe', action: 'Completed quiz "JavaScript Basics"', time: '2 hours ago' },
-                { id: 2, user: 'jane_smith', action: 'Started quiz "React Advanced"', time: '5 hours ago' },
-                { id: 3, user: 'bob_wilson', action: 'Registered new account', time: '1 day ago' }
-            ]
-        });
+        fetchStatistics();
     }, []);
+
+    const fetchStatistics = async () => {
+        try {
+            setLoading(true);
+            const response = await statisticsAPI.getStatistics();
+            setStats(response.data);
+        } catch (error) {
+            console.error('Error fetching statistics:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="admin-page">
+                <div className="loading">Loading statistics...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="admin-page">
@@ -63,10 +74,18 @@ const Statistics = () => {
                 </div>
 
                 <div className="stat-card">
+                    <div className="stat-icon">📊</div>
+                    <div className="stat-content">
+                        <h3>{stats.totalAttempts}</h3>
+                        <p>Quiz Attempts</p>
+                    </div>
+                </div>
+
+                <div className="stat-card">
                     <div className="stat-icon">✅</div>
                     <div className="stat-content">
                         <h3>{stats.activeUsers}</h3>
-                        <p>Active Users</p>
+                        <p>Active Users (7d)</p>
                     </div>
                 </div>
             </div>
@@ -74,15 +93,19 @@ const Statistics = () => {
             <div className="recent-activity">
                 <h2>Recent Activity</h2>
                 <div className="activity-list">
-                    {stats.recentActivity.map(activity => (
-                        <div key={activity.id} className="activity-item">
-                            <div className="activity-content">
-                                <strong>{activity.user}</strong>
-                                <p>{activity.action}</p>
+                    {stats.recentActivity.length > 0 ? (
+                        stats.recentActivity.map(activity => (
+                            <div key={activity.id} className="activity-item">
+                                <div className="activity-content">
+                                    <strong>{activity.user}</strong>
+                                    <p>{activity.action}</p>
+                                </div>
+                                <span className="activity-time">{activity.time}</span>
                             </div>
-                            <span className="activity-time">{activity.time}</span>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <p className="no-activity">No recent activity</p>
+                    )}
                 </div>
             </div>
         </div>

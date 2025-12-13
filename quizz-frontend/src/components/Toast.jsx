@@ -23,10 +23,12 @@ const Toast = ({ message, type, onClose }) => {
         }
     };
 
+    const displayMessage = typeof message === 'object' ? JSON.stringify(message) : message;
+
     return (
         <div className={`toast toast-${type}`}>
             <div className="toast-icon">{getIcon()}</div>
-            <div className="toast-message">{message}</div>
+            <div className="toast-message">{displayMessage}</div>
             <button className="toast-close" onClick={onClose}>×</button>
         </div>
     );

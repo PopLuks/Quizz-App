@@ -95,7 +95,12 @@ const Dashboard = () => {
                             <div className="feature-card">
                                 <h3>🎯 Take a Quiz</h3>
                                 <p>Start a new quiz challenge</p>
-                                <button className="btn-feature">Start Quiz</button>
+                                <button 
+                                    className="btn-feature"
+                                    onClick={() => navigate('/quizzes')}
+                                >
+                                    Start Quiz
+                                </button>
                             </div>
                             <div className="feature-card">
                                 <h3>📊 My Results</h3>

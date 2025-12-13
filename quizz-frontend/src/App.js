@@ -9,6 +9,12 @@ import ManageQuizzes from './components/admin/ManageQuizzes';
 import ManageQuestions from './components/admin/ManageQuestions';
 import UserList from './components/admin/UserList';
 import Statistics from './components/admin/Statistics';
+import CreateQuiz from './components/quiz/CreateQuiz';
+import EditQuiz from './components/quiz/EditQuiz';
+import AvailableQuizzes from './components/user/AvailableQuizzes';
+import TakeQuiz from './components/user/TakeQuiz';
+import QuizResult from './components/user/QuizResult';
+import ViewAttemptResult from './components/user/ViewAttemptResult';
 import './App.css';
 
 function App() {
@@ -36,6 +42,22 @@ function App() {
             } 
           />
           <Route 
+            path="/admin/quizzes/create" 
+            element={
+              <ProtectedRoute>
+                <CreateQuiz />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/quizzes/edit/:id" 
+            element={
+              <ProtectedRoute>
+                <EditQuiz />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/admin/questions" 
             element={
               <ProtectedRoute>
@@ -56,6 +78,38 @@ function App() {
             element={
               <ProtectedRoute>
                 <Statistics />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/quizzes" 
+            element={
+              <ProtectedRoute>
+                <AvailableQuizzes />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/quiz/:id" 
+            element={
+              <ProtectedRoute>
+                <TakeQuiz />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/quiz-result" 
+            element={
+              <ProtectedRoute>
+                <QuizResult />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/quiz-result/:attemptId" 
+            element={
+              <ProtectedRoute>
+                <ViewAttemptResult />
               </ProtectedRoute>
             } 
           />
