@@ -1,18 +1,26 @@
 package com.quizz.quizz_backend.controller;
 
-import com.quizz.quizz_backend.model.User;
-import com.quizz.quizz_backend.model.Role;
-import com.quizz.quizz_backend.dto.QuizAttemptDTO;
-import com.quizz.quizz_backend.repository.UserRepository;
-import com.quizz.quizz_backend.service.QuizAttemptService;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import com.quizz.quizz_backend.dto.QuizAttemptDTO;
+import com.quizz.quizz_backend.model.Role;
+import com.quizz.quizz_backend.model.User;
+import com.quizz.quizz_backend.repository.UserRepository;
+import com.quizz.quizz_backend.service.QuizAttemptService;
 
 @RestController
 @RequestMapping("/api/admin")
