@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.quizz.quizz_backend.dto.QuizAttemptDTO;
 import com.quizz.quizz_backend.dto.SubmitQuizRequest;
+import com.quizz.quizz_backend.dto.UserAnswerDTO;
 import com.quizz.quizz_backend.model.AnswerOption;
 import com.quizz.quizz_backend.model.Question;
 import com.quizz.quizz_backend.model.QuestionType;
@@ -125,16 +126,17 @@ public class QuizAttemptService {
                                      selectedOptionIds.containsAll(correctOptionIds) &&
                                      correctOptionIds.containsAll(selectedOptionIds);
                     
-                    // Save user answers for each selected option
-                    for (Long selectedOptionId : selectedOptionIds) {
-                        AnswerOption selectedOption = answerOptionRepository.findById(selectedOptionId).orElse(null);
-                        if (selectedOption != null) {
+                    // For multiple choice, save only the first selected option as the main answer
+                    // This represents the entire question's answer
+                    if (!selectedOptionIds.isEmpty()) {
+                        AnswerOption firstSelectedOption = answerOptionRepository.findById(selectedOptionIds.get(0)).orElse(null);
+                        if (firstSelectedOption != null) {
                             UserAnswer userAnswer = new UserAnswer();
                             userAnswer.setAttempt(attempt);
                             userAnswer.setQuestion(question);
-                            userAnswer.setSelectedOption(selectedOption);
+                            userAnswer.setSelectedOption(firstSelectedOption);
                             userAnswer.setIsCorrect(questionCorrect);
-                            userAnswer.setPointsEarned(0); // Points will be assigned to the question, not individual options
+                            userAnswer.setPointsEarned(questionCorrect ? question.getPoints() : 0);
                             
                             attempt = attemptRepository.save(attempt);
                             userAnswerRepository.save(userAnswer);
@@ -230,6 +232,40 @@ public class QuizAttemptService {
         dto.setStartedAt(attempt.getStartedAt());
         dto.setCompletedAt(attempt.getCompletedAt());
         dto.setTimeTakenSeconds(attempt.getTimeTakenSeconds());
+        
+        // Fetch and convert user answers
+        List<UserAnswer> userAnswers = userAnswerRepository.findByAttemptId(attempt.getId());
+        List<UserAnswerDTO> userAnswerDTOs = userAnswers.stream()
+                .map(this::convertUserAnswerToDTO)
+                .collect(Collectors.toList());
+        dto.setUserAnswers(userAnswerDTOs);
+        
+        return dto;
+    }
+    
+    private UserAnswerDTO convertUserAnswerToDTO(UserAnswer userAnswer) {
+        UserAnswerDTO dto = new UserAnswerDTO();
+        dto.setQuestionId(userAnswer.getQuestion().getId());
+        dto.setQuestionText(userAnswer.getQuestion().getQuestionText());
+        dto.setSelectedOptionId(userAnswer.getSelectedOption().getId());
+        dto.setSelectedOptionText(userAnswer.getSelectedOption().getOptionText());
+        
+        // Find the correct answer option
+        List<AnswerOption> options = answerOptionRepository.findByQuestionIdOrderByOrderIndexAsc(
+                userAnswer.getQuestion().getId());
+        AnswerOption correctOption = options.stream()
+                .filter(AnswerOption::getIsCorrect)
+                .findFirst()
+                .orElse(null);
+        
+        if (correctOption != null) {
+            dto.setCorrectOptionId(correctOption.getId());
+            dto.setCorrectOptionText(correctOption.getOptionText());
+        }
+        
+        dto.setIsCorrect(userAnswer.getIsCorrect());
+        dto.setPointsEarned(userAnswer.getPointsEarned());
+        
         return dto;
     }
 }

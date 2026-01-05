@@ -47,7 +47,9 @@ export const authAPI = {
 export const adminAPI = {
     getAllUsers: () => api.get('/admin/users'),
     toggleUserStatus: (userId) => api.put(`/admin/users/${userId}/toggle`),
-    deleteUser: (userId) => api.delete(`/admin/users/${userId}`)
+    deleteUser: (userId) => api.delete(`/admin/users/${userId}`),
+    updateUser: (userId, userData) => api.put(`/admin/users/${userId}`, userData),
+    getUserAttempts: (userId) => api.get(`/admin/users/${userId}/attempts`)
 };
 
 export const quizAPI = {

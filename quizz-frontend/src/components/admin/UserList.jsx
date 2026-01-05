@@ -3,11 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../services/api';
 import Toast from '../Toast';
 import './Admin.css';
+import './UserModal.css';
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
+    const [editingUser, setEditingUser] = useState(null);
+    const [editForm, setEditForm] = useState({
+        username: '',
+        email: '',
+        role: '',
+        password: ''
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -94,6 +102,62 @@ const UserList = () => {
         }
     };
 
+    const handleEditUser = (user) => {
+        setEditingUser(user);
+        setEditForm({
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            password: '' // Lasă gol pentru a nu schimba parola
+        });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingUser(null);
+        setEditForm({
+            username: '',
+            email: '',
+            role: '',
+            password: ''
+        });
+    };
+
+    const handleSaveEdit = async () => {
+        try {
+            const updateData = {
+                username: editForm.username,
+                email: editForm.email,
+                role: editForm.role
+            };
+            
+            // Adaugă parola doar dacă a fost introdusă
+            if (editForm.password && editForm.password.trim() !== '') {
+                updateData.password = editForm.password;
+            }
+
+            const response = await adminAPI.updateUser(editingUser.id, updateData);
+            
+            setUsers(prevUsers => 
+                prevUsers.map(u => 
+                    u.id === editingUser.id ? response.data : u
+                )
+            );
+            
+            setToast({ 
+                message: 'User updated successfully!', 
+                type: 'success' 
+            });
+            
+            handleCancelEdit();
+        } catch (error) {
+            console.error('❌ Update error:', error);
+            setToast({ 
+                message: error.response?.data?.message || 'Failed to update user.', 
+                type: 'error' 
+            });
+        }
+    };
+
     if (loading) {
         return (
             <div className="admin-page">
@@ -163,6 +227,12 @@ const UserList = () => {
                                             {user.enabled ? '🔒 Disable' : '✅ Enable'}
                                         </button>
                                         <button 
+                                            onClick={() => handleEditUser(user)} 
+                                            className="edit-btn-small"
+                                        >
+                                            ✏️
+                                        </button>
+                                        <button 
                                             onClick={() => handleDeleteUser(user.id)} 
                                             className="delete-btn-small"
                                         >
@@ -175,6 +245,72 @@ const UserList = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* Edit User Modal */}
+            {editingUser && (
+                <div className="modal-overlay" onClick={handleCancelEdit}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>✏️ Edit User</h2>
+                            <button className="modal-close" onClick={handleCancelEdit}>✕</button>
+                        </div>
+                        
+                        <div className="modal-body">
+                            <div className="form-group">
+                                <label>Username</label>
+                                <input
+                                    type="text"
+                                    value={editForm.username}
+                                    onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                                    className="form-input"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input
+                                    type="email"
+                                    value={editForm.email}
+                                    onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                                    className="form-input"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Role</label>
+                                <select
+                                    value={editForm.role}
+                                    onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                                    className="form-input"
+                                >
+                                    <option value="USER">USER</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label>New Password (leave blank to keep current)</label>
+                                <input
+                                    type="password"
+                                    value={editForm.password}
+                                    onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                                    className="form-input"
+                                    placeholder="Enter new password or leave blank"
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="modal-footer">
+                            <button className="btn-cancel" onClick={handleCancelEdit}>
+                                Cancel
+                            </button>
+                            <button className="btn-save" onClick={handleSaveEdit}>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,6 +1,7 @@
 package com.quizz.quizz_backend.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class QuizAttemptDTO {
     private Long id;
@@ -17,6 +18,7 @@ public class QuizAttemptDTO {
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
     private Integer timeTakenSeconds;
+    private List<UserAnswerDTO> userAnswers;
 
     // Getters and Setters
     public Long getId() {
@@ -129,5 +131,13 @@ public class QuizAttemptDTO {
 
     public void setTimeTakenSeconds(Integer timeTakenSeconds) {
         this.timeTakenSeconds = timeTakenSeconds;
+    }
+
+    public List<UserAnswerDTO> getUserAnswers() {
+        return userAnswers;
+    }
+
+    public void setUserAnswers(List<UserAnswerDTO> userAnswers) {
+        this.userAnswers = userAnswers;
     }
 }

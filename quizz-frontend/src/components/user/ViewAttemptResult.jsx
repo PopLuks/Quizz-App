@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { attemptAPI, quizAPI } from '../../services/api';
 import Toast from '../Toast';
 import './User.css';
+import './ViewAttemptResult.css';
 
 const ViewAttemptResult = () => {
     const { attemptId } = useParams();
@@ -92,17 +93,105 @@ const ViewAttemptResult = () => {
                 </div>
 
                 <div className="result-details">
-                    <h2>Quiz Information</h2>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '15px', padding: '1.5rem', marginBottom: '2rem' }}>
-                        <p><strong>Quiz Title:</strong> {quiz.title}</p>
-                        <p><strong>Description:</strong> {quiz.description}</p>
-                        <p><strong>Difficulty:</strong> {quiz.difficulty}</p>
+                    <h2>📋 Quiz Information</h2>
+                    <div className="quiz-info-card">
+                        <div className="info-row">
+                            <div className="info-icon">📝</div>
+                            <div className="info-content">
+                                <span className="info-title">Quiz Title</span>
+                                <span className="info-text">{quiz.title}</span>
+                            </div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-icon">💬</div>
+                            <div className="info-content">
+                                <span className="info-title">Description</span>
+                                <span className="info-text">{quiz.description}</span>
+                            </div>
+                        </div>
+                        <div className="info-row">
+                            <div className="info-icon">⚡</div>
+                            <div className="info-content">
+                                <span className="info-title">Difficulty</span>
+                                <span 
+                                    className="difficulty-badge-inline"
+                                    style={{ 
+                                        backgroundColor: quiz.difficulty === 'EASY' ? '#4CAF50' : 
+                                                       quiz.difficulty === 'MEDIUM' ? '#FF9800' : '#f44336'
+                                    }}
+                                >
+                                    {quiz.difficulty}
+                                </span>
+                            </div>
+                        </div>
                         {attempt.timeTakenSeconds && (
-                            <p><strong>Time Taken:</strong> {Math.floor(attempt.timeTakenSeconds / 60)}:{(attempt.timeTakenSeconds % 60).toString().padStart(2, '0')}</p>
+                            <div className="info-row">
+                                <div className="info-icon">⏱️</div>
+                                <div className="info-content">
+                                    <span className="info-title">Time Taken</span>
+                                    <span className="info-text">
+                                        {Math.floor(attempt.timeTakenSeconds / 60)}:{(attempt.timeTakenSeconds % 60).toString().padStart(2, '0')}
+                                    </span>
+                                </div>
+                            </div>
                         )}
-                        <p><strong>Completed At:</strong> {new Date(attempt.completedAt).toLocaleString()}</p>
+                        <div className="info-row">
+                            <div className="info-icon">📅</div>
+                            <div className="info-content">
+                                <span className="info-title">Completed At</span>
+                                <span className="info-text">{new Date(attempt.completedAt).toLocaleString()}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                {attempt.userAnswers && attempt.userAnswers.length > 0 && (
+                    <div className="result-details">
+                        <h2>📝 Question Review</h2>
+                        <div className="questions-review-container">
+                            {attempt.userAnswers.map((userAnswer, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`question-review-card ${userAnswer.isCorrect ? 'correct' : 'incorrect'}`}
+                                >
+                                    <div className="question-review-header">
+                                        <span className="question-number">Question {index + 1}</span>
+                                        <span className={`question-status ${userAnswer.isCorrect ? 'correct' : 'incorrect'}`}>
+                                            {userAnswer.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                                        </span>
+                                    </div>
+                                    <div className="question-text">{userAnswer.questionText}</div>
+                                    
+                                    <div className="answer-review">
+                                        <div className="answer-section">
+                                            <strong className="answer-label your-answer-label">Your Answer:</strong>
+                                            <div className={`option-review ${userAnswer.isCorrect ? 'correct' : 'incorrect'}`}>
+                                                {userAnswer.selectedOptionText}
+                                                <span className="option-icon">
+                                                    {userAnswer.isCorrect ? '✓' : '✗'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        {!userAnswer.isCorrect && (
+                                            <div className="answer-section">
+                                                <strong className="answer-label correct-answer-label">Correct Answer:</strong>
+                                                <div className="option-review correct">
+                                                    {userAnswer.correctOptionText}
+                                                    <span className="option-icon">✓</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="question-points">
+                                        Points: {userAnswer.pointsEarned}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <div className="result-actions">
                     <button onClick={() => navigate('/quizzes')} className="btn-secondary">

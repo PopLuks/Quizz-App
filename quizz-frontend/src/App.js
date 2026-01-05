@@ -15,6 +15,7 @@ import AvailableQuizzes from './components/user/AvailableQuizzes';
 import TakeQuiz from './components/user/TakeQuiz';
 import QuizResult from './components/user/QuizResult';
 import ViewAttemptResult from './components/user/ViewAttemptResult';
+import MyResults from './components/user/MyResults';
 import './App.css';
 
 function App() {
@@ -110,6 +111,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ViewAttemptResult />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/my-results" 
+            element={
+              <ProtectedRoute>
+                <MyResults />
               </ProtectedRoute>
             } 
           />

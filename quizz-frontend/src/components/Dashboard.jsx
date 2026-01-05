@@ -105,17 +105,19 @@ const Dashboard = () => {
                             <div className="feature-card">
                                 <h3>📊 My Results</h3>
                                 <p>View your quiz history and scores</p>
-                                <button className="btn-feature">View Results</button>
-                            </div>
-                            <div className="feature-card">
-                                <h3>🏆 Leaderboard</h3>
-                                <p>See top performers</p>
-                                <button className="btn-feature">View Rankings</button>
+                                <button 
+                                    className="btn-feature"
+                                    onClick={() => navigate('/my-results')}
+                                >
+                                    View Results
+                                </button>
                             </div>
                             <div className="feature-card">
                                 <h3>⚙️ Settings</h3>
                                 <p>Update your profile</p>
-                                <button className="btn-feature">Settings</button>
+                                <button className="btn-feature" disabled style={{opacity: 0.6, cursor: 'not-allowed'}}>
+                                    Coming Soon
+                                </button>
                             </div>
                         </>
                     )}
