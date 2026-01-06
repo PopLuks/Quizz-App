@@ -112,13 +112,6 @@ const Dashboard = () => {
                                     View Results
                                 </button>
                             </div>
-                            <div className="feature-card">
-                                <h3>⚙️ Settings</h3>
-                                <p>Update your profile</p>
-                                <button className="btn-feature" disabled style={{opacity: 0.6, cursor: 'not-allowed'}}>
-                                    Coming Soon
-                                </button>
-                            </div>
                         </>
                     )}
                 </div>
